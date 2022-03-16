@@ -86,12 +86,12 @@ namespace BasicFacebookFeatures
         {
 
             base.OnShown(e);
-            Form1.s_AppSettingss = AppSettings.LoadFromFile();
+            Form1.s_AppSettings = AppSettings.LoadFromFile();
 
-            if (Form1.s_AppSettingss.RememberUser && !string.IsNullOrEmpty(Form1.s_AppSettingss.RecentAccessToken))
+            if (Form1.s_AppSettings.RememberUser && !string.IsNullOrEmpty(Form1.s_AppSettings.RecentAccessToken))
             {
 
-                m_LoginResult = FacebookService.Connect(Form1.s_AppSettingss.RecentAccessToken);
+                m_LoginResult = FacebookService.Connect(Form1.s_AppSettings.RecentAccessToken);
                 this.Hide();
                 m_LoggedInUser = m_LoginResult.LoggedInUser;
                 m_ReloadFormMain = new Form1(m_LoggedInUser, m_LoginResult);
@@ -104,12 +104,12 @@ namespace BasicFacebookFeatures
         private void cbRememberMe_CheckedChanged(object sender, EventArgs e)
         {
 
-            bool buttonRemmberMe = false;
+            bool buttonRememberMe = false;
 
             if (cbRememberMe.Checked)
             {
 
-                Form1.s_AppSettingss.RememberUser = !buttonRemmberMe;
+                Form1.s_AppSettings.RememberUser = !buttonRememberMe;
 
             }
 

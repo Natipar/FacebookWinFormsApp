@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using FacebookWrapper;
 using FacebookWrapper.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
+
 
 namespace BasicFacebookFeatures
 {
@@ -22,32 +24,17 @@ namespace BasicFacebookFeatures
         {
 
             InitializeComponent();
+            //s_AppSettings = AppSettings.LoadFromFile();
             InitializeSettingsFromFile();
             m_LoginResult = i_Login;
             m_LoggedInUser = i_UserLogged;
             r_Features = new Features(m_LoggedInUser);
-            
-
         }
 
-        private void InitializeSettingsFromFile()
-        {
-
-            if (s_AppSettingss.RememberUser)
-            {
-                s_AppSettingss = AppSettings.LoadFromFile();
-                s_AppSettingss.RememberUser = !s_AppSettingss.RememberUser;
-            }
-            else
-            {
-                s_AppSettingss = AppSettings.LoadFromFile();
-            }
-
-        }
 
         private User m_LoggedInUser;
         private LoginResult m_LoginResult;
-        public static AppSettings s_AppSettingss;
+        public static AppSettings s_AppSettings;
         private readonly Features r_Features;
 
         private void fetchLoggedInUser()
@@ -79,31 +66,31 @@ namespace BasicFacebookFeatures
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            this.Size = s_AppSettingss.RecentWindowSize;
-            this.Location = s_AppSettingss.RecentWindowLocation;
+            this.Size = s_AppSettings.RecentWindowSize;
+            this.Location = s_AppSettings.RecentWindowLocation;
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
 
             base.OnFormClosing(e);
 
-            s_AppSettingss.RecentWindowSize = this.Size;
-            s_AppSettingss.RecentWindowLocation = this.Location;
+            s_AppSettings.RecentWindowSize = this.Size;
+            s_AppSettings.RecentWindowLocation = this.Location;
 
-            if (s_AppSettingss.RememberUser)
+            if (s_AppSettings.RememberUser)
             {
 
-                s_AppSettingss.RecentAccessToken = m_LoginResult.AccessToken;
+                s_AppSettings.RecentAccessToken = m_LoginResult.AccessToken;
 
             }
             else
             {
 
-                s_AppSettingss.RecentAccessToken = null;
+                s_AppSettings.RecentAccessToken = null;
 
             }
 
-            s_AppSettingss.SaveToFile();
+            s_AppSettings.SaveToFile();
 
             Application.ExitThread();
 
@@ -443,7 +430,24 @@ namespace BasicFacebookFeatures
             featchSortGenderFriend();
 
         }
+        private void InitializeSettingsFromFile()
+        {
 
+            if (s_AppSettings.RememberUser)
+            {
+                if (!File.Exists("AppSettings.xml"))
+                {
+                    s_AppSettings = AppSettings.LoadFromFile();
+                    s_AppSettings.RememberUser = !s_AppSettings.RememberUser;
+                }
+
+            }
+            else
+            {
+                s_AppSettings = AppSettings.LoadFromFile();
+            }
+
+        }
         private void featchSortGenderFriend()
         {
 
